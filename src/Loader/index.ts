@@ -364,7 +364,7 @@ function setupGenlite() {
             });
 
             // Execute genliteJS code using eval
-            eval(genlite.js);
+            eval(genlite.src);
         }
     });
 }
