@@ -426,6 +426,14 @@ function installGenlite() {
     setupGenfanad();
 }
 
+if ('GenFanad.Client' in localStorage) {
+    localStorage.removeItem('GenFanad.Client');
+}
+
+if ('GenLite.Client' in localStorage) {
+    localStorage.removeItem('GenLite.Client');
+}
+
 if ('indexedDB' in window) {
     setupIDB();
 } else {
