@@ -282,6 +282,7 @@ let isInitialized = false;
     });
 
     function maybeUpdateGenfanadScript(isFirefox=false) {
+        console.log('maybe update genfanad', !!document.genfanadScriptTag, !!document.cachedGenfanadLoaded);t
         if (document.genfanadScriptTag && document.cachedGenfanadLoaded) {
             let script = document.genfanadScriptTag;
             script.textContent = document.cachedGenfanadSource;

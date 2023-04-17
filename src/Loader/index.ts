@@ -360,7 +360,7 @@ function setupGenlite() {
                 let loginVersion = document.getElementById('loginversion');
 
                 // Append the version span to the loginversion span
-                loginVersion.appendChild(genlite.version);
+                loginVersion.appendChild(version);
             });
 
             // Execute genliteJS code using eval
