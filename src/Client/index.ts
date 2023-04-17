@@ -57,6 +57,10 @@ declare global {
             settings: GenLiteSettingsPlugin,
         };
         initGenLite: () => void;
+
+        genfanadScriptTag: any;
+        cachedGenfanadSource: string;
+        cachedGenfanadLoaded: boolean;
     }
 }
 
@@ -277,44 +281,67 @@ let isInitialized = false;
         }
     });
 
+    function maybeUpdateGenfanadScript(isFirefox=false) {
+        if (document.genfanadScriptTag && document.cachedGenfanadLoaded) {
+            let script = document.genfanadScriptTag;
+            script.textContent = document.cachedGenfanadSource;
+            if (isFirefox) {
+                script.type = 'module';
+                (document.head || document.documentElement).appendChild(script);
+            }
+        }
+    }
+
     function firefoxOverride(e) {
         let src = e.target.src;
         if (src === 'https://play.genfanad.com/play/js/client.js') {
             e.preventDefault(); // do not load
             e.stopPropagation();
             var script = document.createElement('script');
-            script.textContent = genfanadJS;
-            script.type = 'module';
-            (document.head || document.documentElement).appendChild(script);
+            document.genfanadScriptTag = script;
+            maybeUpdateGenfanadScript(true);
         }
     }
-    
-    let genfanadJS = localStorage.getItem("GenFanad.Client");
-    if (!genfanadJS) {
-        console.error("GenFanad.Client not found in localStorage. GenLite will not work.");
+
+    const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+
+    let r = window.indexedDB.open('GenLiteLoaderDatabase', 1);
+    r.onsuccess = (e) => {
+        let db = r.result;
+        let tx = db.transaction('genfanad.client', 'readonly');
+        let store = tx.objectStore('genfanad.client');
+        let count = store.count();
+        count.onsuccess = () => {
+            if (count.result === 0) {
+                document.cachedGenfanadSource = null;
+                document.cachedGenfanadLoaded = true;
+                console.error("GenFanad client not found in IDB. GenLite will not work.");
+            } else {
+                store.openCursor(null, 'prev').onsuccess = (e: any) => {
+                    let genfanadJS = e.target.result.src;
+                    genfanadJS = genfanadJS.replace(/window\.innerWidth/g, "document.body.clientWidth");
+                    genfanadJS = genfanadJS.replace(/background-image: linear-gradient\(var\(--yellow-3\), var\(--yellow-3\)\);/g, "");
+                    document.cachedGenfanadSource = genfanadJS;
+                    document.cachedGenfanadLoaded = true;
+                    maybeUpdateGenfanadScript(isFirefox);
+                };
+            }
+        };
+    };
+
+    if (isFirefox) {
+        document.addEventListener("beforescriptexecute", firefoxOverride, true);
     } else {
-        genfanadJS = genfanadJS.replace(/window\.innerWidth/g, "document.body.clientWidth");
-        genfanadJS = genfanadJS.replace(/background-image: linear-gradient\(var\(--yellow-3\), var\(--yellow-3\)\);/g, "");
-        
-        // if (document.head) {
-        //     throw new Error('Head already exists - make sure to enable instant script injection');
-        // }
-        
-        const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-        
-        if (isFirefox) {
-            document.addEventListener("beforescriptexecute", firefoxOverride, true);
-        } else {
-            new MutationObserver((_, observer) => {
-                const clientjsScriptTag = document.querySelector('script[src*="client.js"]');
-                if (clientjsScriptTag) {
-                    clientjsScriptTag.removeAttribute('src');
-                    clientjsScriptTag.textContent = genfanadJS;
-                }
-            }).observe(document.documentElement, {
-                childList: true,
-                subtree: true
-            });
-        }
+        new MutationObserver((_, observer) => {
+            const clientjsScriptTag = document.querySelector('script[src*="client.js"]');
+            if (clientjsScriptTag) {
+                clientjsScriptTag.removeAttribute('src');
+                document.genfanadScriptTag = clientjsScriptTag;
+                maybeUpdateGenfanadScript();
+            }
+        }).observe(document.documentElement, {
+            childList: true,
+            subtree: true
+        });
     }
 })();
