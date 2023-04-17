@@ -295,7 +295,9 @@ let isInitialized = false;
 
     function firefoxOverride(e) {
         let src = e.target.src;
+        console.log('firefox override', src);
         if (src === 'https://play.genfanad.com/play/js/client.js') {
+            console.log('is client.js');
             e.preventDefault(); // do not load
             e.stopPropagation();
             var script = document.createElement('script');
@@ -330,6 +332,7 @@ let isInitialized = false;
         };
     };
 
+    console.log('setting up client script hook');
     if (isFirefox) {
         document.addEventListener("beforescriptexecute", firefoxOverride, true);
     } else {
