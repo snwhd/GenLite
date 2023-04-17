@@ -318,7 +318,7 @@ let isInitialized = false;
                 console.error("GenFanad client not found in IDB. GenLite will not work.");
             } else {
                 store.openCursor(null, 'prev').onsuccess = (e: any) => {
-                    let genfanadJS = e.target.result.src;
+                    let genfanadJS = e.target.result.value.src;
                     genfanadJS = genfanadJS.replace(/window\.innerWidth/g, "document.body.clientWidth");
                     genfanadJS = genfanadJS.replace(/background-image: linear-gradient\(var\(--yellow-3\), var\(--yellow-3\)\);/g, "");
                     document.cachedGenfanadSource = genfanadJS;

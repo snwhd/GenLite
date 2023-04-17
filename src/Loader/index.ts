@@ -61,8 +61,7 @@ function getGenliteFromIDB(callback) {
                 callback(null);
             } else {
                 store.openCursor(null, 'prev').onsuccess = (e: any) => {
-                    const cursor = e.target.result;
-                    callback(cursor.value);
+                    callback(e.target.result.value);
                 };
             }
         };
@@ -100,8 +99,7 @@ function getGenfanadFromIDB(callback) {
                 callback(null);
             } else {
                 store.openCursor(null, 'prev').onsuccess = (e: any) => {
-                    const cursor = e.target.result;
-                    callback(cursor.value);
+                    callback(e.target.result.value);
                 };
             }
         };
