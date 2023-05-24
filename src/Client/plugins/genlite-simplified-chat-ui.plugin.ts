@@ -22,27 +22,11 @@ export class GenliteSimplifiedChatUiPlugin extends GenLitePlugin {
   chatWidth: number = 700;
 
   chatBackground: HTMLElement;
-  chatButtons: HTMLElement;
-  chatAllButton: HTMLElement;
-  chatGameButton: HTMLElement;
-  chatQuestButton: HTMLElement;
-  chatPublicButton: HTMLElement;
-  chatPrivateButton: HTMLElement;
-  chatClanButton: HTMLElement;
-  chatFriendsButton: HTMLElement;
-  chatIgnoredButton: HTMLElement;
-  chatToggleButton: HTMLElement;
-  chatFriendsDiv: HTMLElement;
-  chatInputBox: HTMLElement;
-  chatIgnoredDiv: HTMLElement;
   chatContent: HTMLElement;
   chatWrapper: HTMLElement;
   chatBox: HTMLElement;
 
   pointerEventOverrides: Array<HTMLElement> = [];
-
-  emptyStyle = '';
-  styleAutoEvents = `pointer-events: auto;`;
 
   hasLoadedElements = false;
   hasLoadedOriginalStyles = false;
@@ -67,9 +51,13 @@ export class GenliteSimplifiedChatUiPlugin extends GenLitePlugin {
     this.isPluginEnabled = state;
 
     if (state) {
-      this.start();
+        this.loadElements();
+        this.assignOriginalStyles();
+        this.setChatStyles();
     } else {
-      this.stop();
+        this.loadElements();
+        this.assignOriginalStyles();
+        this.revertChatStyles();
     }
   }
 
@@ -77,42 +65,23 @@ export class GenliteSimplifiedChatUiPlugin extends GenLitePlugin {
     this.chatWidth = value;
 
     if (this.isPluginEnabled) {
-      this.enableUI();
+      this.setChatStyles();
     }
   }
 
-  public stop() {
-    this.loadElements();
-    this.assignOriginalStyles();
-    this.disableUI();
   }
 
-  public start() {
-    this.loadElements();
-    this.assignOriginalStyles();
-    this.enableUI();
-  }
-
-  enableUI() {
-    for (const entry of this.pointerEventOverrides) {
-      entry.setAttribute('style', this.styleAutoEvents);
-    }
-
+  setChatStyles() {
     this.chatBackground.setAttribute('style', `background: rgba(0,0,0,0.7); clip-path: none; width: ${this.chatWidth}px; pointer-events: none;`);
     this.chatContent.setAttribute('style', `width: calc(${this.chatWidth}px - 36px);`);
     this.chatWrapper.setAttribute('style', 'left: 0px; width: calc(100% - 10px);');
     this.chatBox.setAttribute('style', 'background: transparent');
   }
 
-  disableUI() {
-    for (const entry of this.pointerEventOverrides) {
-      entry.setAttribute('style', this.emptyStyle);
-    }
-
+  revertChatStyles() {
     this.chatBackground.setAttribute('style', this.originalStyles['chatBackground']);
     this.chatContent.setAttribute('style', this.originalStyles['chatContent']);
     this.chatWrapper.setAttribute('style', this.originalStyles['chatWrapper']);
-
     this.chatBox.setAttribute('style', this.originalStyles['chatBox']);
   }
 
@@ -122,42 +91,9 @@ export class GenliteSimplifiedChatUiPlugin extends GenLitePlugin {
     }
 
     this.chatBackground = document.getElementById('new_ux-chat-box');
-    this.chatButtons = document.getElementById('new_ux-chat__upper-buttons-row');
-    this.chatAllButton = document.getElementById('new_ux-chat-all-button');
-    this.chatGameButton = document.getElementById('new_ux-chat-game-button');
-    this.chatQuestButton = document.getElementById('new_ux-chat-quest-button');
-    this.chatPublicButton = document.getElementById('new_ux-chat-public-button');
-    this.chatPrivateButton = document.getElementById('new_ux-chat-private-button');
-    this.chatClanButton = document.getElementById('new_ux-chat-clan-button');
-    this.chatFriendsButton = document.getElementById('new_ux-chat_friends-list-window__add-friend-button');
-    this.chatIgnoredButton = document.getElementById('new_ux-chat_ignored-window__ignore-user-button');
-    this.chatToggleButton = document.getElementById('new_ux-chat-toggle-button');
-    this.chatFriendsDiv = document.getElementById('new_ux-chat_friends-list-window');
-    this.chatInputBox = document.getElementById('new_ux-chat-tab__chat-prompt');
-    this.chatIgnoredDiv = document.getElementById('new_ux-chat_ignored-window');
     this.chatContent = document.getElementById('new_ux-chat-dialog-box-content');
     this.chatWrapper = document.getElementById('new_ux-chat-box__inner-wrapper');
     this.chatBox = document.getElementById('new_ux-chat-dialog-box');
-
-    this.pointerEventOverrides = [
-      this.chatBackground,
-      this.chatButtons,
-      this.chatAllButton,
-      this.chatGameButton,
-      this.chatQuestButton,
-      this.chatPublicButton,
-      this.chatPrivateButton,
-      this.chatClanButton,
-      this.chatFriendsButton,
-      this.chatIgnoredButton,
-      this.chatToggleButton,
-      this.chatFriendsDiv,
-      this.chatInputBox,
-      this.chatIgnoredDiv,
-      this.chatContent,
-      this.chatWrapper,
-      this.chatBox,
-    ];
 
     this.hasLoadedElements = true;
   }
