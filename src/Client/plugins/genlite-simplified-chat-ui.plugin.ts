@@ -16,17 +16,13 @@ export class GenliteSimplifiedChatUiPlugin extends GenLitePlugin {
   static pluginName = 'GenliteSimplifiedChatUiPlugin';
 
   isPluginEnabled: boolean = false;
-
-  originalStyles = {};
-
   chatWidth: number = 700;
 
   chatBackground: HTMLElement;
   chatContent: HTMLElement;
   chatWrapper: HTMLElement;
   chatBox: HTMLElement;
-
-  pointerEventOverrides: Array<HTMLElement> = [];
+  originalStyles = {};
 
   pluginSettings: Settings = {
     'Chat Width': {
