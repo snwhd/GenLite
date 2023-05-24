@@ -24,6 +24,11 @@ export class GenliteSimplifiedChatUiPlugin extends GenLitePlugin {
   chatBox: HTMLElement;
   originalStyles = {};
 
+  eventHandler: EventListener;
+  eventsToOverride = [
+    'mousedown', 'mousemove', 'mouseup',
+  ];
+
   pluginSettings: Settings = {
     'Chat Width': {
       type: 'number',
@@ -35,6 +40,7 @@ export class GenliteSimplifiedChatUiPlugin extends GenLitePlugin {
   async init() {
     document.genlite.registerPlugin(this);
 
+    this.eventHandler = this.redirectEventToCanvas.bind(this);
     this.chatBackground = document.getElementById('new_ux-chat-box');
     this.originalStyles['chatBackground'] = this.chatBackground.getAttribute('style');
 
@@ -54,11 +60,12 @@ export class GenliteSimplifiedChatUiPlugin extends GenLitePlugin {
 
   handlePluginState(state: boolean): void {
     this.isPluginEnabled = state;
-
     if (state) {
-        this.setChatStyles();
+      this.setChatStyles();
+      this.hookPointerEvents();
     } else {
-        this.revertChatStyles();
+      this.revertChatStyles();
+      this.unhookPointerEvents();
     }
   }
 
@@ -70,10 +77,13 @@ export class GenliteSimplifiedChatUiPlugin extends GenLitePlugin {
   }
 
   setChatStyles() {
-    this.chatBackground.setAttribute('style', `background: rgba(0,0,0,0.7); clip-path: none; width: ${this.chatWidth}px; pointer-events: none;`);
-    this.chatContent.setAttribute('style', `width: calc(${this.chatWidth}px - 36px);`);
-    this.chatWrapper.setAttribute('style', 'left: 0px; width: calc(100% - 10px);');
-    this.chatBox.setAttribute('style', 'background: transparent');
+    this.chatBackground.style.background = 'rgba(0, 0, 0, 0.7)';
+    this.chatBackground.style.clipPath = 'none';
+    this.chatBackground.style.width = `${this.chatWidth}px`;
+    this.chatContent.style.width = `calc(${this.chatWidth}px - 36px)`;
+    this.chatWrapper.style.left = '0px';
+    this.chatWrapper.style.width = `calc(100% - 10px)`;
+    this.chatBox.style.background = 'transparent';
   }
 
   revertChatStyles() {
@@ -82,4 +92,26 @@ export class GenliteSimplifiedChatUiPlugin extends GenLitePlugin {
     this.chatWrapper.setAttribute('style', this.originalStyles['chatWrapper']);
     this.chatBox.setAttribute('style', this.originalStyles['chatBox']);
   }
+
+  hookPointerEvents() {
+    for (const eventName of this.eventsToOverride) {
+        this.chatBackground.addEventListener(eventName, this.eventHandler);
+    }
+  }
+
+  unhookPointerEvents() {
+    for (const eventName of this.eventsToOverride) {
+        this.chatBackground.removeEventListener(eventName, this.eventHandler);
+    }
+  }
+
+  redirectEventToCanvas(event: Event) {
+      // TODO: this does not work yet because genfanad manually checks that the
+      //       game canvas matches :hover before handling this event. We need
+      //       a workaround for this (override the method, or implement scroll)
+      document.dispatchEvent(new (event as any).constructor(event.type, event));
+      event.preventDefault();
+      event.stopPropagation();
+  }
+
 }
