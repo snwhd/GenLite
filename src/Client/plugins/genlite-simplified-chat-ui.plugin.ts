@@ -28,9 +28,6 @@ export class GenliteSimplifiedChatUiPlugin extends GenLitePlugin {
 
   pointerEventOverrides: Array<HTMLElement> = [];
 
-  hasLoadedElements = false;
-  hasLoadedOriginalStyles = false;
-
   pluginSettings: Settings = {
     'Chat Width': {
       type: 'number',
@@ -41,6 +38,18 @@ export class GenliteSimplifiedChatUiPlugin extends GenLitePlugin {
 
   async init() {
     document.genlite.registerPlugin(this);
+
+    this.chatBackground = document.getElementById('new_ux-chat-box');
+    this.originalStyles['chatBackground'] = this.chatBackground.getAttribute('style');
+
+    this.chatContent = document.getElementById('new_ux-chat-dialog-box-content');
+    this.originalStyles['chatContent'] = this.chatContent.getAttribute('style');
+
+    this.chatWrapper = document.getElementById('new_ux-chat-box__inner-wrapper');
+    this.originalStyles['chatWrapper'] = this.chatWrapper.getAttribute('style');
+
+    this.chatBox = document.getElementById('new_ux-chat-dialog-box');
+    this.originalStyles['chatBox'] = this.chatBox.getAttribute('style');
   }
 
   async postInit() {
@@ -51,24 +60,17 @@ export class GenliteSimplifiedChatUiPlugin extends GenLitePlugin {
     this.isPluginEnabled = state;
 
     if (state) {
-        this.loadElements();
-        this.assignOriginalStyles();
         this.setChatStyles();
     } else {
-        this.loadElements();
-        this.assignOriginalStyles();
         this.revertChatStyles();
     }
   }
 
   handleChatWidthChanged(value: number) {
     this.chatWidth = value;
-
     if (this.isPluginEnabled) {
       this.setChatStyles();
     }
-  }
-
   }
 
   setChatStyles() {
@@ -83,31 +85,5 @@ export class GenliteSimplifiedChatUiPlugin extends GenLitePlugin {
     this.chatContent.setAttribute('style', this.originalStyles['chatContent']);
     this.chatWrapper.setAttribute('style', this.originalStyles['chatWrapper']);
     this.chatBox.setAttribute('style', this.originalStyles['chatBox']);
-  }
-
-  loadElements() {
-    if (this.hasLoadedElements) {
-      return;
-    }
-
-    this.chatBackground = document.getElementById('new_ux-chat-box');
-    this.chatContent = document.getElementById('new_ux-chat-dialog-box-content');
-    this.chatWrapper = document.getElementById('new_ux-chat-box__inner-wrapper');
-    this.chatBox = document.getElementById('new_ux-chat-dialog-box');
-
-    this.hasLoadedElements = true;
-  }
-
-  assignOriginalStyles() {
-    if (this.hasLoadedOriginalStyles) {
-      return;
-    }
-
-    this.originalStyles['chatBackground'] = this.chatBackground.getAttribute('style');
-    this.originalStyles['chatContent'] = this.chatContent.getAttribute('style');
-    this.originalStyles['chatWrapper'] = this.chatWrapper.getAttribute('style');
-    this.originalStyles['chatBox'] = this.chatBox.getAttribute('style');
-
-    this.hasLoadedOriginalStyles = true;
   }
 }
