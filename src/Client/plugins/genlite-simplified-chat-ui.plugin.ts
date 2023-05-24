@@ -23,18 +23,18 @@ export class GenliteSimplifiedChatUiPlugin extends GenLitePlugin {
 
   chatBackground: HTMLElement;
   chatButtons: HTMLElement;
-  chatButton1: HTMLElement;
-  chatButton2: HTMLElement;
-  chatButton3: HTMLElement;
-  chatButton4: HTMLElement;
-  chatButton5: HTMLElement;
-  chatButton6: HTMLElement;
-  chatButton7: HTMLElement;
-  chatButton8: HTMLElement;
-  chatButton9: HTMLElement;
-  chatButton10: HTMLElement;
-  chatButton11: HTMLElement;
-  chatButton12: HTMLElement;
+  chatAllButton: HTMLElement;
+  chatGameButton: HTMLElement;
+  chatQuestButton: HTMLElement;
+  chatPublicButton: HTMLElement;
+  chatPrivateButton: HTMLElement;
+  chatClanButton: HTMLElement;
+  chatFriendsButton: HTMLElement;
+  chatIgnoredButton: HTMLElement;
+  chatToggleButton: HTMLElement;
+  chatFriendsDiv: HTMLElement;
+  chatInputBox: HTMLElement;
+  chatIgnoredDiv: HTMLElement;
   chatContent: HTMLElement;
   chatWrapper: HTMLElement;
   chatBox: HTMLElement;
@@ -123,18 +123,18 @@ export class GenliteSimplifiedChatUiPlugin extends GenLitePlugin {
 
     this.chatBackground = document.getElementById('new_ux-chat-box');
     this.chatButtons = document.getElementById('new_ux-chat__upper-buttons-row');
-    this.chatButton1 = document.getElementById('new_ux-chat-all-button');
-    this.chatButton2 = document.getElementById('new_ux-chat-game-button');
-    this.chatButton3 = document.getElementById('new_ux-chat-quest-button');
-    this.chatButton4 = document.getElementById('new_ux-chat-public-button');
-    this.chatButton5 = document.getElementById('new_ux-chat-private-button');
-    this.chatButton6 = document.getElementById('new_ux-chat-clan-button');
-    this.chatButton7 = document.getElementById('new_ux-chat_friends-list-window__add-friend-button');
-    this.chatButton8 = document.getElementById('new_ux-chat_ignored-window__ignore-user-button');
-    this.chatButton9 = document.getElementById('new_ux-chat-toggle-button');
-    this.chatButton10 = document.getElementById('new_ux-chat_friends-list-window');
-    this.chatButton11 = document.getElementById('new_ux-chat-tab__chat-prompt');
-    this.chatButton12 = document.getElementById('new_ux-chat_ignored-window');
+    this.chatAllButton = document.getElementById('new_ux-chat-all-button');
+    this.chatGameButton = document.getElementById('new_ux-chat-game-button');
+    this.chatQuestButton = document.getElementById('new_ux-chat-quest-button');
+    this.chatPublicButton = document.getElementById('new_ux-chat-public-button');
+    this.chatPrivateButton = document.getElementById('new_ux-chat-private-button');
+    this.chatClanButton = document.getElementById('new_ux-chat-clan-button');
+    this.chatFriendsButton = document.getElementById('new_ux-chat_friends-list-window__add-friend-button');
+    this.chatIgnoredButton = document.getElementById('new_ux-chat_ignored-window__ignore-user-button');
+    this.chatToggleButton = document.getElementById('new_ux-chat-toggle-button');
+    this.chatFriendsDiv = document.getElementById('new_ux-chat_friends-list-window');
+    this.chatInputBox = document.getElementById('new_ux-chat-tab__chat-prompt');
+    this.chatIgnoredDiv = document.getElementById('new_ux-chat_ignored-window');
     this.chatContent = document.getElementById('new_ux-chat-dialog-box-content');
     this.chatWrapper = document.getElementById('new_ux-chat-box__inner-wrapper');
     this.chatBox = document.getElementById('new_ux-chat-dialog-box');
@@ -142,18 +142,18 @@ export class GenliteSimplifiedChatUiPlugin extends GenLitePlugin {
     this.pointerEventOverrides = [
       this.chatBackground,
       this.chatButtons,
-      this.chatButton1,
-      this.chatButton2,
-      this.chatButton3,
-      this.chatButton4,
-      this.chatButton5,
-      this.chatButton6,
-      this.chatButton7,
-      this.chatButton8,
-      this.chatButton9,
-      this.chatButton10,
-      this.chatButton11,
-      this.chatButton12,
+      this.chatAllButton,
+      this.chatGameButton,
+      this.chatQuestButton,
+      this.chatPublicButton,
+      this.chatPrivateButton,
+      this.chatClanButton,
+      this.chatFriendsButton,
+      this.chatIgnoredButton,
+      this.chatToggleButton,
+      this.chatFriendsDiv,
+      this.chatInputBox,
+      this.chatIgnoredDiv,
       this.chatContent,
       this.chatWrapper,
       this.chatBox,
